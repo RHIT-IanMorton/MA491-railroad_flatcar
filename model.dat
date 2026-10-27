@@ -1,0 +1,38 @@
+set car := car_1 car_2;
+
+set crate := C1 C2 C3 C4 C5 C6 C7;
+
+set restricted := C5 C6 C7;
+
+param thickness :=
+C1      48.7
+C2      52.0
+C3      61.3
+C4      72.0
+C5      48.7
+C6      52.0
+C7      64.0 ;
+
+param weight :=
+C1      2000
+C2      3000
+C3      1000
+C4      500
+C5      4000
+C6      2000
+C7      1000;
+
+param crate_limit :=
+C1      8
+C2      7
+C3      9
+C4      6
+C5      6
+C6      4
+C7      8;
+
+param car_length := 1020;
+
+param max_weight := 40000;
+
+param special_limit := 302.7;
