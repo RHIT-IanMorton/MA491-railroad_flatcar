@@ -52,7 +52,7 @@ def EnsureCrateLimit(M,crate):
 M.CrateLimit = Constraint(M.crate, rule=EnsureCrateLimit)
 
 def EnsureWeightLimit(M,car):
-   return sum (M.num_crates[car,crate] for crate in M.crate) <= M.max_weight
+   return sum (M.num_crates[car,crate]*M.weight[crate] for crate in M.crate) <= M.max_weight
 M.WeightLimit = Constraint(M.car, rule=EnsureWeightLimit)
 
 def EnsureSpecialRestriction(M):
