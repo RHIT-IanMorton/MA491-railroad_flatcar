@@ -36,9 +36,9 @@ M.num_crates = Var(M.car, M.crate, within=NonNegativeIntegers)
 # ==============
 # Objective
 # ==============
-def CalcWastedFloorSpace(M):
-   return 2*M.car_length - sum (M.num_crates[car,crate]*M.thickness[crate] for crate in M.crate for car in M.car)
-M.WastedFloorSpace = Objective(rule=CalcWastedFloorSpace, sense=minimize)
+def CalcUsedSpace(M):
+   return sum (M.num_crates[car,crate]*M.thickness[crate] for crate in M.crate for car in M.car)
+M.UsedSpace = Objective(rule=CalcUsedSpace, sense=maximize)
 
 # ==============
 # Constraints
