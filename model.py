@@ -27,6 +27,7 @@ M.crate_limit = Param(M.crate, within=NonNegativeReals)
 M.car_length = Param(within=NonNegativeReals)
 M.max_weight = Param(within=NonNegativeReals)
 M.special_limit = Param(within=NonNegativeReals)
+M.crate_min = Param(M.crate, within=NonNegativeIntegers)
 
 # ==============
 # Variables
@@ -59,6 +60,9 @@ def EnsureSpecialRestriction(M):
    return sum(M.num_crates[car, crate]*M.thickness[crate] for car in M.car for crate in M.restricted) <= M.special_limit
 M.SpecialRestriction = Constraint(rule=EnsureSpecialRestriction)
 
+# def EnsureMinCrates(M,crate):
+#    return sum(M.num_crates[car,crate] for car in M.car) >= M.crate_min[crate]
+# M.MinCrates = Constraint(M.crate, rule=EnsureMinCrates)
 
 # ============================
 # Create a problem instance
