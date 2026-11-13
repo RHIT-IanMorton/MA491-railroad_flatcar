@@ -9,7 +9,10 @@ Ian Morton, Ethan Wilson, Mateo Corrales Enriquez
 from __future__ import division # safety with double division
 from pyomo.environ import *
 from pyomo.opt import SolverFactory
-import os.path
+from sys import argv
+from pathlib import Path
+from argparse import ArgumentParser
+from typing import List, Optional
 
 # Instantiate and name the model
 M = AbstractModel()
@@ -67,19 +70,53 @@ M.SpecialRestriction = Constraint(rule=EnsureSpecialRestriction)
 # ============================
 # Create a problem instance
 # ============================
-this_dir = os.path.dirname(__file__)
-data_path = os.path.join(this_dir, "model.dat")
-instance = M.create_instance(data_path)
-# instance.pprint()
+def main(argv: Optional[List[str]] = None) -> None:
 
-# Indicate which solver to use
-Opt = SolverFactory("gurobi")
+   parser = ArgumentParser(
+      description="Calculate a solution to the Railroad Flatcar problem."
+   )
 
-# Generate a solution
-Soln = Opt.solve(instance)
-instance.solutions.load_from(Soln)
+   parser.add_argument(
+      "-f", "--file",
+      type=Path,
+      default=Path("small.dat"),
+      help="Path to the input .dat file (default: small.dat)."
+   )
 
-# Print the output
-print("Termination Condition was "+str(Soln.Solver.Termination_condition))
-display(instance)
-# instance.pprint()
+   args = parser.parse_args(argv)
+
+   # Resolve and validate the input file
+   data_path = args.file.resolve()
+
+   if not data_path.is_file():
+      parser.error(f"Input file does not exist: {data_path}")
+
+   print(f"Using input file: {data_path}")
+
+   # Create the concrete model instance
+   instance = M.create_instance(str(data_path))
+
+   # Initialize the solver
+   opt = SolverFactory("gurobi")
+
+   # Solve the model
+   soln = opt.solve(instance)
+
+   # Load the solution into the model
+   instance.solutions.load_from(soln)
+
+   # Print the results
+   print(
+      "Termination Condition was "
+      + str(soln.solver.termination_condition)
+   )
+
+   if soln.solver.termination_condition == TerminationCondition.optimal:
+      instance.solutions.load_from(soln)
+      instance.display()
+   else:
+      print("Solver did not find an optimal solution.")
+
+
+if __name__ == "__main__":
+   main()
